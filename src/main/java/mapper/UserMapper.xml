@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="bean.User" >
+    <id column="m_user_id" property="id" jdbcType="INTEGER" />
+    <result column="m_user_name" property="name" jdbcType="VARCHAR" />
+    <result column="m_user_birthday" property="birthday" jdbcType="DATE" />
+    <result column="m_user_salary" property="salary" jdbcType="DOUBLE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    m.user_id  as id, m.user_name  as name, m.user_birthday  as birthday, 
+    m.user_salary  as salary
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from s_user m
+    where m.user_id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from s_user
+    where user_id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="bean.User" >
+    insert into s_user (user_id, user_name, user_birthday, 
+      user_salary)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, 
+      #{salary,jdbcType=DOUBLE})
+  </insert>
+  <insert id="insertSelective" parameterType="bean.User" >
+    insert into s_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        user_id,
+      </if>
+      <if test="name != null" >
+        user_name,
+      </if>
+      <if test="birthday != null" >
+        user_birthday,
+      </if>
+      <if test="salary != null" >
+        user_salary,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null" >
+        #{birthday,jdbcType=DATE},
+      </if>
+      <if test="salary != null" >
+        #{salary,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="bean.User" >
+    update s_user
+    <set >
+      <if test="name != null" >
+        user_name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null" >
+        user_birthday = #{birthday,jdbcType=DATE},
+      </if>
+      <if test="salary != null" >
+        user_salary = #{salary,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where user_id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="bean.User" >
+    update s_user
+    set user_name = #{name,jdbcType=VARCHAR},
+      user_birthday = #{birthday,jdbcType=DATE},
+      user_salary = #{salary,jdbcType=DOUBLE}
+    where user_id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -6,7 +6,7 @@
 	<properties resource="generator.properties" />
 	
 	<!-- 设置sqlServer驱动路径,默认自动加载classpath下jar -->
-	<classPathEntry location="${sqlJdbcPath}" />
+	<!-- <classPathEntry location="${sqlJdbcPath}" /> -->
 
 	<!-- 
 		defaultModelType:用来定义生成模型类型策略(conditional默认策略，为每个表生成一个Model class)
