@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+
+<!-- 配置参考http://generator.sturgeon.mopaas.com/configreference/xmlconfig.html -->
+<generatorConfiguration>
+	<properties resource="generator.properties" />
+	
+	<!-- 设置sqlServer驱动路径,默认自动加载classpath下jar -->
+	<classPathEntry location="${sqlJdbcPath}" />
+
+	<!-- 
+		defaultModelType:用来定义生成模型类型策略(conditional默认策略，为每个表生成一个Model class)
+		targetRuntime：此属性用于指定运行时目标生成的代码(MyBatis3 默认值 将生成对象兼容MyBatis版本3.0和更高版本,和JSE 5.0和更高版本)
+	 -->
+	<context id="mybatis" targetRuntime="MyBatis3" defaultModelType="flat">
+		
+		<!--  
+			autoDelimitKeywords当表名或者字段名为SQL关键字的时候MBG会自动给表名或字段名添加**分隔符**("")
+			javaFileEncoding设置要使用的Java文件的编码（默认当前平台的编码）
+		-->
+		<property name="autoDelimitKeywords" value="true"/>
+		<property name="beginningDelimiter" value="`"/>
+		<property name="endingDelimiter" value="`"/>
+		
+		<plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
+		<plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
+		
+		<!-- 
+			 这个插件可用于指定作为主键的列，即使它们没有在数据库中被定义为主键列。这是在数据库表没有定义主的情况下非常有用
+			<table tableName="foo">
+				<property name="virtualKeyColumns" value="ID1, ID2" />
+			</table>
+		 -->
+		<plugin type="org.mybatis.generator.plugins.VirtualPrimaryKeyPlugin" />
+		<plugin type="plugin.SqlColumnMapperPlugin" />
+
+		
+		<!-- 
+			生成注释的配置
+			1、suppressAllComments此属性用于指定在生成的代码是否将包括任何注释。如果设置为true 则不生成注释（默认false）
+			2、suppressDate此属性用于指定在生成的注释是否将包括时间戳（默认false）
+		-->
+		<commentGenerator type="org.mybatis.generator.internal.DefaultCommentGenerator">
+			<property name="suppressAllComments" value="true"/>
+			<property name="suppressDate" value="true"/>
+		</commentGenerator>
+		 
+		<jdbcConnection driverClass="${driver}" connectionURL="${url}" userId="${username}" password="${password}" />
+
+		<!-- java类型解析器(类型转换)
+			type:指定一个用户提供的Java类型解析器。这个类必须实现接口org.mybatis.generator.api.JavaTypeResolver
+			forceBigDecimals是否强制使用BigDecimal来表示所有的十进制和数值字段(默认false，根据长度自动转换相应的类型)
+		 -->
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false"/>
+		</javaTypeResolver>
+		
+		<!-- 
+			generate Model 
+			constructorBased选择是否MyBatis生成器将生成一个类的构造函数(默认false)
+			immutable选择是否MyBatis生成器将产生不可变模型类(不会有“setter”方法和构造函数会接受类中每个字段的值)(默认false)
+			trimStrings选择是否MyBatis生成器添加代码来修剪的白色空间从字符字段从数据库返回的(默认false)(解决CHAR类型)
+			enableSubPackages选择MyBatis发生器是否会生成不同的Java包对象基于目录和自检表的模式(默认false)
+		-->
+		<javaModelGenerator targetPackage="${modelPackage}" targetProject="${modelProject}" >
+			<property name="constructorBased" value="false" />
+			<property name="enableSubPackages" value="false" />
+			<property name="immutable" value="false" />
+            <property name="trimStrings" value="true" />
+		</javaModelGenerator>
+		
+		<!-- 
+			generate xml 
+			是否让schema作为包的后缀
+		-->
+		<sqlMapGenerator targetPackage="${sqlMapperPackage}" targetProject="${sqlMapperProject}" >
+			<property name="enableSubPackages" value="true"/>
+		</sqlMapGenerator>
+		
+		<!-- 
+			generate Mapper 
+			XMLMAPPER生成的对象将Java接口MyBatis3的mapper基础设施。接口将会依赖生成的XML映射器文件
+		-->
+		<javaClientGenerator targetPackage="${daoMapperPackage}" targetProject="${daoMapperProject}" type="XMLMAPPER" >
+			<property name="enableSubPackages" value="true" />
+		</javaClientGenerator>
+
+		<!-- 
+			 domainObjectName：生成javabean对象的基本名称
+			 enableInsert：是否生成插入语句。默认是true
+		 -->
+		<table schema="mybatis" tableName="s_user" domainObjectName="User" 
+			enableInsert="true" 
+			enableSelectByPrimaryKey="true"
+			enableUpdateByPrimaryKey="true" 
+			enableDeleteByPrimaryKey="true" 
+			selectByPrimaryKeyQueryId="false" 
+			selectByExampleQueryId="false"
+			enableSelectByExample="false"
+			enableCountByExample="false"
+			enableDeleteByExample="false"
+			enableUpdateByExample="false" 
+			escapeWildcards="" 
+			alias="m"
+		>
+			<!-- 按规则将数据库中的字段重命名为实体类的属性 -->
+			<columnRenamingRule searchString="^user_" replaceString=""/>
+		</table>
+	</context>
+</generatorConfiguration>

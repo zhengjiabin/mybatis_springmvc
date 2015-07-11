@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                     http://www.springframework.org/schema/beans/spring-beans.xsd 
+                     http://www.springframework.org/schema/tx 
+                     http://www.springframework.org/schema/tx/spring-tx.xsd 
+                     http://www.springframework.org/schema/aop 
+                     http://www.springframework.org/schema/aop/spring-aop.xsd
+                     http://www.springframework.org/schema/context
+                     http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+    <!-- 
+    	spring自动扫描src包下的带有（@Repository、@Service、@Controller、@Component）注解的文件
+    	use-default-filters：默认为true，若需自定义扫描过滤方式，则需配置为false，否者自定义的扫描方式无效
+    -->                 
+	<context:component-scan base-package="src.main.java" use-default-filters="true">
+		<!-- 扫描过滤方式 --> 
+		<!-- <context:include-filter type="regex" expression="bean.*"/>
+		<context:exclude-filter type="annotation" expression="mapper"/> -->
+	</context:component-scan>
+	
+	<!-- context:component-scan扫描包含了annotation，若配置context:component-scan，无需配置此扫描 -->
+	<!-- <context:annotation-config /> -->
+	  
+	 <!-- mybatis自动扫描的配置会影响加载此配置功能 --> 
+    <context:property-placeholder location="classpath*:db.properties" /> 
+    
+    
+	<!-- 1、数据源：DriverManagerDataSource -->
+	<!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${driver}" />
+		<property name="url" value="${url}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}" />
+	</bean> -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${driver}" />
+		<property name="url" value="${url}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}" />
+	</bean>
+
+	<!-- 2、mybatis的sqlSessionFactory的工厂：SqlSessionFactoryBean -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		
+		<!-- 自动加载mapper文件，Mapper文件跟对应的Mapper接口处于同一位置的时候可以不用指定该属性的值 -->
+		<property name="mapperLocations" value="classpath:mapper/*.xml"/>
+		
+		<!-- 
+			如果指定了该属性，那么会以该配置文件的内容作为配置信息构建对应的SqlSessionFactoryBuilder
+			但是后续属性指定的内容会覆盖该配置文件里面指定的对应内容 
+		-->
+		<!-- <property name="configLocation" value="classpath:mybatis.xml"/> -->
+		
+		<!-- 多个package之间可以用逗号或者分号等来进行分隔 -->
+		<property name="typeAliasesPackage" value="bean" />
+		
+		<!-- 
+			Mybatis会把这个类型的短名称作为这个类型的别名
+			前提是该类上没有标注@Alias注解，否则将使用该注解对应的值作为此种类型的别名 
+		-->
+		<!-- <property name="typeAliases">  
+		    <array>  
+		        <value>bean.User</value>
+		    </array>  
+		</property> -->
+		
+		
+		<!-- 默认此事务控制，从spring中获取db，并根据spring的事务控制转换成mybatis控制 -->
+		<!-- <property name="transactionFactory" value="org.mybatis.spring.transaction.SpringManagedTransactionFactory" /> -->
+	</bean>
+	
+	<!-- mybatis整合spring方式一：使用mapper接口 -->
+	<!-- 3、加载sql映射接口，分为自动加载、手动加载 -->
+	<!-- 3.1、mybatis自动扫描加载Sql映射接口：MapperScannerConfigurer 
+			basePackage：指定Sql映射接口所在的包(在这个基包或其所有子包下面的Mapper接口都将被搜索到。多个基包之间可以使用逗号或者分号进行分隔) 
+	-->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 
+			自动扫描缩小范围和注册范围的方法 
+			方法2、方法3同时配置时，取并集而不是交集
+		-->
+		
+		<!-- 1、定义基包 -->
+		<property name="basePackage" value="src.main.java.dao" />
+		
+		<!-- 2、当指定了annotationClass的时候，MapperScannerConfigurer将只注册使用了annotationClass注解标记的接口 -->
+		<!-- <property name="annotationClass" value = "mapper.AnnotationMapper"/> -->
+		
+		<!-- 3、当指定了markerInterface之后，MapperScannerConfigurer将只注册继承自markerInterface的接口 -->
+		<!-- <property name="markerInterface" value="mapper.AbstractMapper"/> -->
+		
+		<!-- 不会立即初始化SessionFactory，解决spring的PropertyPlaceholderConfigurer属性配置加载失效现象 -->
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+	</bean>
+
+	<!-- 3.2手动加载sql映射接口 -->
+	<!-- <bean id="UserMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="mapper.UserMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean> -->
+	
+	
+	<!-- mybatis整合spring方式二：使用SqlSessionTemplate对象 -->
+	<!-- <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+       <constructor-arg index="0" ref="sqlSessionFactory" />
+    </bean> -->
+    
+    <!-- <bean id="userDAOImpl" class="dao.impl.UserDAOImpl">     
+		注入SqlSessionTemplate实例      
+		<property name="sqlSessionTemplate" ref="sqlSession" />
+		     
+		  也可直接注入SqlSessionFactory实例，二者都指定时，SqlSessionFactory失效     
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />     
+	</bean> -->
+	
+
+	<!-- 4、事务管理：DataSourceTransactionManager -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- 5、使用声明式事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+</beans>
