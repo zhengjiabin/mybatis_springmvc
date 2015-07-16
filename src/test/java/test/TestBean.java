@@ -17,13 +17,14 @@ public class TestBean {
     
     @Before
     public void before() {
-        String springConfig = "applicationContext.xml";
-        ac = new ClassPathXmlApplicationContext(springConfig);
+        String springConfig = "spring.xml";
+        String springMybatisConfig = "spring_mybatis.xml";
+        ac = new ClassPathXmlApplicationContext(springConfig, springMybatisConfig);
         userServ = ac.getBean(UserServ.class);
     }
     
     @Test
-    public void testGetBean(){
+    public void testGetBean() {
         UserModel model = userServ.getUserModel();
         User user = model.getUser();
         System.out.println(user);

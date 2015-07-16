@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                     http://www.springframework.org/schema/beans/spring-beans.xsd 
+                     http://www.springframework.org/schema/tx 
+                     http://www.springframework.org/schema/tx/spring-tx.xsd 
+                     http://www.springframework.org/schema/aop 
+                     http://www.springframework.org/schema/aop/spring-aop.xsd
+                     http://www.springframework.org/schema/context
+                     http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+    <!-- 
+    	spring自动扫描src包下的带有（@Repository、@Service、@Controller、@Component）注解的文件
+    	use-default-filters：默认为true，若需自定义扫描过滤方式，则需配置为false，否者自定义的扫描方式无效
+    -->
+	<context:component-scan base-package="serv" use-default-filters="true">
+		<!-- 扫描过滤方式 --> 
+		<!-- <context:include-filter type="regex" expression="bean.*"/>
+		<context:exclude-filter type="annotation" expression="mapper"/> -->
+	</context:component-scan>
+	  
+	 <!-- mybatis自动扫描的配置会影响加载此配置功能 --> 
+    <context:property-placeholder location="classpath*:db.properties" /> 
+</beans>

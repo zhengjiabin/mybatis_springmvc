@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                     http://www.springframework.org/schema/beans/spring-beans.xsd 
+                     http://www.springframework.org/schema/tx 
+                     http://www.springframework.org/schema/tx/spring-tx.xsd 
+                     http://www.springframework.org/schema/aop 
+                     http://www.springframework.org/schema/aop/spring-aop.xsd
+                     http://www.springframework.org/schema/context
+                     http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+    <!-- 
+    	spring自动扫描src包下的带有（@Repository、@Service、@Controller、@Component）注解的文件
+    	use-default-filters：默认为true，若需自定义扫描过滤方式，则需配置为false，否者自定义的扫描方式无效
+    -->
+    <context:component-scan base-package="controller" use-default-filters="true" />                 
+    
+    <!-- 避免IE执行AJAX时，返回json出现下载文件 -->
+    <bean id="mappingConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+    	<property name="supportedMediaTypes">
+    		<list>
+    			<value>text/html;charset=gbk</value>
+    		</list>
+    	</property>
+    </bean>
+    
+    <!-- 启动spring mvc的注解功能，完成请求和注解POJO的映射 -->
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+    	<property name="messageConverters">
+    		<list>
+    			<ref bean="mappingConverter" />
+    		</list>
+    	</property>
+    </bean>
+    
+    
+    <!-- 对模型视图的解析，即在模型视图名称添加前后缀 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/" p:suffix=".jsp"/>
+    
+    <!-- 文件上传相关配置 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    	<property name="defaultEncoding">
+    		<value>gbk</value>
+    	</property>
+    	<property name="maxUploadSize">
+    		<value>2097152</value><!-- 上传文件大小限制2M：2*1024*1024 -->
+    	</property>
+    	<property name="maxInMemorySize">
+    		<value>4096</value>
+    	</property>
+    </bean>
+    
+</beans>
