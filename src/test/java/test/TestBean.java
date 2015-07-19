@@ -25,7 +25,7 @@ public class TestBean {
     
     @Test
     public void testGetBean() {
-        UserModel model = userServ.getUserModel();
+        UserModel model = userServ.getUserModel(0);
         User user = model.getUser();
         System.out.println(user);
     }

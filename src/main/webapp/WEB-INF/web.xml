@@ -5,7 +5,7 @@
 	<display-name>mybatis_springmvc</display-name>
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath:spring.xml,classpath:spring_mybatis.xml</param-value>
+		<param-value>classpath:spring.xml;classpath:spring_mybatis.xml</param-value>
 	</context-param>
 	
 	<filter>
@@ -52,10 +52,6 @@
 		<servlet-name>mybatis_springmvc</servlet-name>
 		<url-pattern>*.do</url-pattern>
 	</servlet-mapping>
-	
-	<session-config>
-		<session-timeout>15</session-timeout>
-	</session-config>
 	
 	<welcome-file-list>
 		<welcome-file>/index.jsp</welcome-file>

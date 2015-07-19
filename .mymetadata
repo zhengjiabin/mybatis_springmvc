@@ -7,7 +7,7 @@
   j2ee-spec="1.4"
   archive="mybatis_springmvc.war">
   <attributes>
-    <attribute name="webrootdir" value="WebContent" />
+    <attribute name="webrootdir" value="src/main/webapp" />
   </attributes>
 </project-module>
 

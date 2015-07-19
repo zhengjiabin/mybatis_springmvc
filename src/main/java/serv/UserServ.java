@@ -14,8 +14,8 @@ public class UserServ {
     @Autowired
     private UserMapper userMapper;
     
-    public UserModel getUserModel() {
-        User user = userMapper.selectByPrimaryKey(1);
+    public UserModel getUserModel(int id) {
+        User user = userMapper.selectByPrimaryKey(id);
         
         UserModel model = new UserModel();
         model.setUser(user);
