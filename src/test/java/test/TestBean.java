@@ -1,7 +1,10 @@
 package test;
 
+import java.util.List;
+
 import model.UserModel;
 
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -11,6 +14,9 @@ import serv.UserServ;
 import bean.User;
 
 public class TestBean {
+    
+    private static final Logger logger = Logger.getLogger(TestBean.class);
+    
     private ApplicationContext ac;
     
     private UserServ userServ;
@@ -25,8 +31,14 @@ public class TestBean {
     
     @Test
     public void testGetBean() {
-        UserModel model = userServ.getUserModel(0);
+        UserModel model = userServ.getUserModel(1);
         User user = model.getUser();
-        System.out.println(user);
+        logger.info(user);
+    }
+    
+    @Test
+    public void testSelectAll() {
+        List<UserModel> allUserModel = userServ.getAllUserModel();
+        logger.info(allUserModel);
     }
 }

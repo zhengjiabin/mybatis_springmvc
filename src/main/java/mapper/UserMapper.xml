@@ -11,22 +11,32 @@
     m.user_id  as id, m.user_name  as name, m.user_birthday  as birthday, 
     m.user_salary  as salary
   </sql>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 'false' as QUERYID,
     <include refid="Base_Column_List" />
     from s_user m
     where m.user_id = #{id,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectAll" resultMap="BaseResultMap">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from s_user m
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from s_user
     where user_id = #{id,jdbcType=INTEGER}
   </delete>
+  
   <insert id="insert" parameterType="bean.User" >
     insert into s_user (user_id, user_name, user_birthday, 
       user_salary)
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, 
       #{salary,jdbcType=DOUBLE})
   </insert>
+  
   <insert id="insertSelective" parameterType="bean.User" >
     insert into s_user
     <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -58,6 +68,7 @@
       </if>
     </trim>
   </insert>
+  
   <update id="updateByPrimaryKeySelective" parameterType="bean.User" >
     update s_user
     <set >
@@ -73,6 +84,7 @@
     </set>
     where user_id = #{id,jdbcType=INTEGER}
   </update>
+  
   <update id="updateByPrimaryKey" parameterType="bean.User" >
     update s_user
     set user_name = #{name,jdbcType=VARCHAR},

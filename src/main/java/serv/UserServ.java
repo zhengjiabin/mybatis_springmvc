@@ -1,5 +1,8 @@
 package serv;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import model.UserModel;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,5 +23,19 @@ public class UserServ {
         UserModel model = new UserModel();
         model.setUser(user);
         return model;
+    }
+    
+    public List<UserModel> getAllUserModel() {
+        List<User> users = userMapper.selectAll();
+        
+        List<UserModel> userModels = new ArrayList<UserModel>();
+        UserModel userModel = null;
+        for (User user : users) {
+            userModel = new UserModel();
+            userModel.setUser(user);
+            userModels.add(userModel);
+        }
+        
+        return userModels;
     }
 }
